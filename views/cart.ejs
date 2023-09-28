@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/slider.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+  />
+    <style>
+        .column {
+          float: left;
+          padding: 20px;
+          height: 300px; /* Should be removed. Only for demonstration */
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          margin: 0 10px;
+        }
+
+
+        .column h4{
+            font-size: 25px;
+            font-weight: lighter;
+            margin: 10px 0 40px 0;
+        }
+        
+        .left {
+          width: 30%;
+        }
+        
+        .right {
+          width: 65%;
+          height: 100%;
+        }
+        
+        /* Clear floats after the columns */
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
+        .row{
+            margin: 100px;
+            background-color: #fff;
+        }
+
+        .product{
+            width: 100%;
+            display: block;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            font-size: 20px;
+            font-family: Shabnam, sans-serif;
+        }
+
+        .product ul li:first-child{
+           font-weight: bold;
+           color: #000;
+           font-size: 20px;
+           font-family: Shabnam, sans-serif;
+        }
+
+        .product:last-child{
+            border: 0;
+        }
+
+        .product ul{
+            margin: 10px 100px 30px 0;
+        }
+
+        li{
+            list-style: none;
+            margin: 10px 0;
+            color: #555;
+            font-size: 18px;
+        }
+
+        .product a img{
+            float: right;
+            width: 100px;
+            height: 100px;
+            display: inline;
+        }
+
+    
+        .cart-btn{
+            font-size: 25px;
+            font-weight: bold;
+            border: 0;
+            padding: 5px;
+            background-color: #fff;
+            color:rgb(255, 53, 46);
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .product small{
+            margin: 10px;
+            font-size: 25px;
+            font-weight: bold;
+            color:rgb(255, 53, 46);
+        }
+
+        .cart-btn .fa-trash{
+            cursor: pointer;
+        }
+
+
+        .order-btn {
+            background-color:rgb(255, 53, 46);
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px 20px;
+            text-transform: lowercase;
+            font-size: 20px;
+            font-weight: bold;
+            width: 100%;
+            margin: 40px auto;
+        }
+    </style>
+
+    <link rel="shortcut icon" href="../images/3.png" type="image/x-icon">
+    <title><%=title%></title>
+  </head>
+  <body>
+    <div class="notifications"></div>
+    <div class="container">
+
+      <div class="search">
+        <form action="/search" method="get">
+          <a style="text-decoration: none" href="/">
+            <img class="logo" src="../images/3.png" alt="" />
+          </a>
+          <input type="text" id="search-input" placeholder="جستجو...." />
+        </form>
+      </div>
+      
+      <nav role="navigation" class="nav">
+        <ul class="nav-items">
+          <li class="nav-item">
+            <a href="/" class="nav-link active-link"
+              ><span>خانه</span></a
+            >
+          </li>
+          <% if(user){ %>
+          <li class="nav-item">
+            <a href="/profile" class="nav-link"><span>پروفایل</span></a>
+          </li>
+      
+          <% } else{ %>
+          <li class="nav-item">
+            <a href="/login" class="nav-link"><span>ورود</span></a>
+          </li>
+          <li class="nav-item">
+            <a href="/register" class="nav-link"><span>ثبت نام</span></a>
+          </li>
+          <% } %>
+      
+          <li class="nav-item" style="margin-right: 40px">
+            <a style="color: rgb(252, 4, 45)" href="/cart" class="nav-link"><span>کارت</span></a>
+          </li>
+      
+          <% if(user) { %>
+          <li class="nav-item">
+            <a style="margin-right: 40px" href="/api/auth/logout" class="nav-link"
+              ><span>خروج</span></a
+            >
+          </li>
+          <% } %>
+        </ul>
+      </nav>
+      
+
+      <!-- main  -->
+      <div class="row">
+        <div class="column left">
+          <h4 style="margin-top: 20px;font-size: 20px;font-family: Shabnam;" id="total-price" class="total-price"></h4>
+          <small style="font-size: 15px;color: #555;">اگر از خرید خود اطمینان دارید آن را ثبت کنید در غیر این صورت میتوانید خرید خود را ادامه دهید</small>
+          <button id="order-btn" class="order-btn">ثبت سفارش</button>
+        </div>
+        <div class="column right" id="right">
+            <h4>سبد خرید شما</h4>
+        </div>
+      </div>
+      
+   
+
+    <script src="../javascripts/script.js"></script>
+    <script>
+      let totalPrice=document.getElementById("total-price")
+      let row=document.querySelector(".row")
+      let cart=localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []
+      const notifications = document.querySelector(".notifications");
+      let userId=localStorage.getItem("userId") ? localStorage.getItem("userId") : null
+      let orderBtn=document.getElementById("order-btn")
+
+      const toastDetails = {
+        timer: 5000,
+        success: {
+          icon: "fa-circle-check",
+          text: "Success: This is a success toast.",
+        },
+        error: {
+          icon: "fa-circle-xmark",
+          text: "Error: This is an error toast.",
+        },
+        warning: {
+          icon: "fa-triangle-exclamation",
+          text: "Warning: This is a warning toast.",
+        },
+        info: {
+          icon: "fa-circle-info",
+          text: "Info: This is an information toast.",
+        },
+      };
+
+      const removeToast = (toast) => {
+        toast.classList.add("hide");
+        if (toast.timeoutId) clearTimeout(toast.timeoutId); // Clearing the timeout for the toast
+        setTimeout(() => toast.remove(), 500); // Removing the toast after 500ms
+      };
+
+      const createToast = (id, icon, text) => {
+        // Getting the icon and text for the toast based on the id passed
+        // const { icon, text } = toastDetails[id];
+        const toast = document.createElement("li"); // Creating a new 'li' element for the toast
+        toast.className = `toast ${id}`; // Setting the classes for the toast
+        // Setting the inner HTML for the toast
+        toast.innerHTML = `<div class="column">
+                   <i class="fa-solid ${icon}"></i>
+                   <span style="margin-right:10px"> ${text}</span>
+                </div>
+                <i class="fa-solid fa-xmark" onclick="removeToast(this.parentElement)"></i>`;
+        notifications.appendChild(toast); // Append the toast to the notification ul
+        // Setting a timeout to remove the toast after the specified duration
+        toast.timeoutId = setTimeout(() => removeToast(toast), 5000);
+      };
+
+
+      if (cart.length === 0) {
+        let rowChilds=row.children
+  
+         for (let i = 0; i < rowChilds.length; i++) {
+            rowChilds[i].style.display="none"
+         }
+        row.innerHTML="<h5 style='margin:20px;'>هنوز هیچ محصولی به کارت شما افزوده نشده است!!!</h5>"
+      }
+
+
+      let right=document.getElementById("right")
+
+     function orderLogic() {
+      let total=0
+      cart.forEach(item=>{
+        total += (+item.price) * (+item.amount)
+      })
+      totalPrice.innerHTML=`<b style="font-family:sans-serif;">قیمت کل: ${total}</b>`
+      let mailCart=[]
+      cart.forEach(flt => {
+        mailCart.push({
+          product:flt._id,
+          title:flt.title,
+          price:flt.price,
+          amount:flt.amount,
+          description:flt.description,
+        })
+      });
+
+      let cartHTML=""
+        mailCart.forEach(item => {
+          
+          cartHTML += `
+           *نام کالا:    ${item.title} <br />
+           *قیمت کالا:    ${item.price}  <br />
+           *درباره کالا:    ${item.description}  <br />
+           *تعداد کالا:    ${item.amount}  <br /> <br />
+          `
+        });
+
+
+      orderBtn.addEventListener("click",function (e) {
+        fetch('/api/users/order-products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              total: total,
+              cart: cartHTML
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+          // enter you logic when the fetch is successful
+          Swal.fire({
+            title: 'ثبت سفارش',
+            text: "آیا از ثبت سفارش خود اطمینان دارید؟",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'بله',
+            cancelButtonText: 'خیر'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire(
+                'سفارش شما با موفقیت ثبت شد !',
+                'ایمیل خود را بررسی کنید',
+                'success',
+                
+              )
+            }
+
+            setTimeout(()=>{
+              cart=[]
+              saveCart(cart)
+              location.replace('/')
+            },4000)
+            
+          })
+
+        })
+        .catch(error => {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: 'سفارش شما ثبت نشد. ',
+              showConfirmButton: false,
+              timer: 1200
+            })
+        }) 
+
+        // ### register order in database ###
+
+        let orderItems=[]
+        let totalOrderPrice=0
+        mailCart.forEach(i=>{
+          let newOrderItem={
+            title:i.title,
+            price:i.price,
+            amount:i.amount,
+            product:i.product
+          }
+
+          totalOrderPrice += i.price
+
+          orderItems.push(newOrderItem)
+        })
+
+
+        fetch('/api/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              user:userId,
+              orderItems:orderItems,
+              totalPrice:totalOrderPrice,
+              paidAt:Date.now()
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+            console.log(error);
+        }) 
+
+
+      })
+
+
+      // $(document).ready(function () {
+      //   $("#order-btn").click(function (e) { 
+      //     e.preventDefault();
+      //     $.ajax({
+      //       type: "POST",
+      //       url: "/api/users/order-products",
+      //       data: {
+      //         total: total,
+      //         cart: cartHTML
+      //       },
+      //       success: function (response) {
+      //         console.log(response);
+      //       }
+      //     });
+      //   });
+      // });
+
+     }
+
+
+
+     function findItem(id) {
+      let findInCart=cart.find((item) => item._id === id)
+      return findInCart
+     }
+
+
+     function saveCart(cart) {
+        localStorage.setItem("cart",JSON.stringify(cart))
+     }
+
+     function cartLogic() {
+      let allSmalls=document.querySelectorAll('.product-amount-small')
+
+      // increase product
+      document.addEventListener("click",function (e) {
+        if(e.target.classList.contains("increase-product-btn")){
+          let id=e.target.id
+          let searchCart=findItem(id)
+          for (let i = 0; i < allSmalls.length; i++) {
+            if(allSmalls[i].id === id){
+              searchCart.amount += 1
+              allSmalls[i].innerText = searchCart.amount
+              saveCart(cart)
+          
+            }
+          }
+        }
+      })
+
+
+      // decrease product
+      document.addEventListener("click",function (e) {
+        if(e.target.classList.contains("decrease-product-btn")){
+          let id=e.target.id
+          let searchCart=findItem(id)
+          for (let i = 0; i < allSmalls.length; i++) {
+            if(allSmalls[i].id === id){
+              if(searchCart.amount > 1){
+                searchCart.amount -= 1
+                allSmalls[i].innerText = searchCart.amount
+                saveCart(cart)
+            
+              }
+            }
+          }
+        }
+      })
+
+
+
+      // delete product from cart
+      document.addEventListener("click",function (e) {
+        if(e.target.classList.contains("delete-product-btn")){
+          let id=e.target.id
+          let searchCart=findItem(id)
+          let deleteItem=cart.filter(item => item._id !== id)
+          saveCart(deleteItem)
+          setTimeout(()=>{
+            location.reload()
+          },500)
+        }
+      })
+
+     }
+
+     
+
+     cart.forEach(item => {
+
+      right.innerHTML += `
+        <div class="product">
+          <a href="/products/${item._id}">
+              <img src="${item.image}" alt="">
+          </a>
+          <ul>
+              <li>${item.title}</li>
+              <li>${item.description}</li>
+              <li>${item.price}</li>
+              <li>${item.category}</li>
+          </ul>
+          <button id="${item._id}" class="cart-btn increase-product-btn">
+              <i id="${item._id}" class="fa fa-plus increase-product-btn" aria-hidden="true"></i>
+          </button>
+          <small id="${item._id}" class="product-amount-small decrease-product-btn">${item.amount}</small>
+          <button id="${item._id}" class="cart-btn">
+              <i id="${item._id}" class="fa fa-minus decrease-product-btn" aria-hidden="true"></i>
+          </button>
+          <button id="${item._id}" class="cart-btn delete-product-btn">
+              <i id="${item._id}" class="fa fa-trash delete-product-btn" aria-hidden="true"></i>
+          </button>
+        </div>
+      
+      `
+      });
+
+
+
+     document.addEventListener("DOMContentLoaded",function (e) {
+        orderLogic()
+        cartLogic()
+      })
+
+    </script>
+
+  </body>
+</html>

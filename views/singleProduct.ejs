@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/slider.css" />
+    <style>/* Create two unequal columns that floats next to each other */
+        *{
+          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
+        .row{
+            margin: 100px;
+            background-color: #fff;
+            width: 100%;
+        }
+
+        .column {
+          float: right;
+          padding: 10px;
+          height: 300px; /* Should be removed. Only for demonstration */
+          border-radius: 8px;
+          margin: 0 10px;
+        }
+
+        .column:last-child{
+          border: 1px solid #ccc;
+        }
+
+        .column h4{
+            font-size: 25px;
+            font-weight: lighter;
+            margin: 10px 0 40px 0;
+        }
+        
+        .left {
+          width: 20%;
+          height: 100%;
+        }
+
+        .middle {
+          width: 30%;
+          height: 100%;
+        }
+        
+        .right {
+          width: 30%;
+          height: 100%;
+        }
+    
+
+        .product{
+            width: 100%;
+            display: block;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            font-size: 20px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+
+   
+        .product ul{
+            margin: 10px auto 30px 0;
+        }
+
+        li{
+            list-style: none;
+            margin: 10px 0;
+            color: #555;
+            font-size: 20px;
+        }
+
+        .product a img{
+            float: right;
+            width: 100px;
+            height: 100px;
+            display: inline;
+           
+        }
+
+      
+
+    
+        .cart-btn{
+            font-size: 25px;
+            font-weight: bold;
+            border: 0;
+            padding: 5px;
+            background-color: #fff;
+            color:rgb(255, 53, 46);
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .product small{
+            margin: 10px;
+            font-size: 25px;
+            font-weight: bold;
+            color:rgb(255, 53, 46);
+        }
+
+        .cart-btn .fa-trash{
+            cursor: pointer;
+        }
+
+
+        .add-to-cart-btn {
+            background-color:rgb(255, 53, 46);
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            width: 100%;
+            margin: 40px auto;
+        }
+    </style>
+  
+    <link rel="shortcut icon" href="../images/3.png" type="image/x-icon">
+    <title><%=title%></title>
+  </head>
+  <body>
+    <div class="container">
+
+      <%-include("./const/header")%>
+
+      <!-- main  -->
+      <div class="row">
+     
+        <div class="column right">
+          <a href="/products/">
+            <img id="product-img" src=""> 
+        </a>
+      </div>
+        <div class="column middle">
+          <div class="product">
+            <ul>
+                <li id="product-title"></li>
+                <li id="product-description"></li>
+                <li id="product-price"></li>
+                <li id="product-category"></li>
+            </ul>
+          </div>
+        </div>
+       
+        <div class="column left">
+          <p style="font-size: 22px;margin: 25px;" class="product-price"></p>
+          <button class="add-to-cart-btn">افزودن به کارت خرید</button>
+        </div>
+      </div>
+      
+   
+
+    <script src="../javascripts/script.js"></script>
+
+    <script>
+      let productId=localStorage.getItem("productId")
+      let cart=[];
+      let addCartBtn=document.querySelector('.add-to-cart-btn')
+      let product;
+
+      
+     async function fetchData() {
+        try {
+          const response = await fetch(`/api/products/${productId}`)
+
+          const result = await response.json();
+          product=result.product
+          return product
+        
+
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
+
+
+      function saveCart(cart) {
+        localStorage.setItem("cart",JSON.stringify(cart))
+      }
+
+
+      function showProduct(product){
+        document.getElementById("product-title").innerText="نام کالا: " + product.title
+          document.getElementById("product-description").innerText="درباره کالا: " +product.description
+          // document.getElementById("product-category").innerText=product.category
+          document.getElementById("product-price").innerText= "قیمت کالا: " + product.price
+          document.querySelector(".product-price").innerText= "قیمت کالا: " + product.price
+          document.getElementById("product-img").src=product.image
+          switch (product.category) {
+            case "home-kitchen":
+              document.getElementById("product-category").innerText="دسته بندی کالا: " + "خانه و آشپزخانه"
+            break;
+
+            case "vehicles":
+              document.getElementById("product-category").innerText="دسته بندی کالا: " + "لوازم نقلیه"
+            break;
+
+            case "food-snack":
+              document.getElementById("product-category").innerText="دسته بندی کالا: " + "خوراکی و سوپر مارکت"
+            break;
+
+            case "fashion":
+              document.getElementById("product-category").innerText="دسته بندی کالا: " + "مد و لباس"
+            break;
+
+            case "electronic-devices":
+              document.getElementById("product-category").innerText="دسته بندی کالا: " + "لوازم الکترونیکی"
+            break;
+           
+          
+            default:
+              break;
+          }
+      }
+
+
+      // localStorage.setItem("cart",product)
+
+      function cartLogic(product) {
+        let cartStorage=localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []
+        addCartBtn.addEventListener("click",(e)=>{
+          if(cartStorage.length === 0){
+            let newProduct={...product,amount:1}
+            cartStorage.push(newProduct)
+            saveCart(cartStorage)
+            setTimeout(()=>{
+              location.reload()
+            },500)
+          }else{
+            for (let i = 0; i < cartStorage.length; i++) {
+              if(cartStorage[i]._id !== product._id){
+                let newProduct={...product,amount:1}
+                cartStorage.push(newProduct)
+                saveCart(cartStorage)
+                setTimeout(()=>{
+                  location.reload()
+                },500)
+                break
+              }
+            }            
+          }
+        })
+      }
+
+      function UI() {
+        let getCart=localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []
+
+        for (let i = 0; i < getCart.length; i++) {
+          if(getCart[i]._id === productId){
+            addCartBtn.innerText="در سبد شما"
+            addCartBtn.style.backgroundColor="#ccc"
+            addCartBtn.style.cursor="not-allowed"
+            addCartBtn.disabled = true;
+          }
+        }
+      }
+ 
+
+
+      document.addEventListener("DOMContentLoaded",(e)=>{
+       fetchData().then((data)=>{
+        showProduct(data)
+        cartLogic(data)
+       })
+     
+        UI()
+      })
+
+    </script>
+
+
+  
+
+  </body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/slider.css" />
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="shortcut icon" href="../images/3.png" type="image/x-icon">
+    <title><%=title%></title>
+    <style>
+      .disabled{
+        cursor:not-allowed;
+        background-color: #ddd;
+      }
+    </style>
+    <style>
+      .update-image-btn{
+        display: block;
+        width: 100%;
+        background-color: #277eff;
+        color: #fff;
+        font-size: 15px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding:8px;
+        border-radius: 8px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+
+    </style>
+  </head>
+
+  <style>
+    .profile-form {
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      padding: 25px;
+      margin: 50px auto;
+      width: 25%;
+    }
+
+    .profile-form-input{
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      margin: 20px auto;
+      
+    }
+
+    .user-avatar-section{
+      margin: 5px auto;
+      width: 100%;
+      border-bottom: 1px solid #ccc;
+      padding: 20px;
+    }
+
+    .user-avatar{
+      margin: 0 30% 10px 50%;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+    }
+
+
+    #update-user-btn, #update-avatar-btn{
+      background-color: rgb(252, 4, 45);
+      padding: 4px;
+      width: 100%;
+      padding: 10px 15px;
+      color: white;
+      cursor: pointer;
+      border: 0;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    #update-user-btn{
+      margin: 10px auto;
+    }
+    
+    #update-avatar-btn{
+      margin-top: 30px;
+    }
+
+  </style>
+  <body>
+    <div class="container">
+
+      <div class="search">
+        <form action="/search" method="get">
+          <a style="text-decoration: none" href="/">
+            <img class="logo" src="../images/3.png" alt="" />
+          </a>
+          <input type="text" id="search-input" placeholder="جستجو...." />
+        </form>
+      </div>
+      
+      <nav role="navigation" class="nav">
+        <ul class="nav-items">
+          <li class="nav-item">
+            <a href="/" class="nav-link active-link"
+              ><span>خانه</span></a
+            >
+          </li>
+          <% if(user){ %>
+          <li class="nav-item">
+            <a style="color: rgb(252, 4, 45)" href="/profile" class="nav-link"><span>پروفایل</span></a>
+          </li>
+      
+          <% } else{ %>
+          <li class="nav-item">
+            <a href="/login" class="nav-link"><span>ورود</span></a>
+          </li>
+          <li class="nav-item">
+            <a href="/register" class="nav-link"><span>ثبت نام</span></a>
+          </li>
+          <% } %>
+      
+          <li class="nav-item" style="margin-right: 40px">
+            <a href="/cart" class="nav-link"><span>کارت</span></a>
+          </li>
+      
+          <% if(user) { %>
+          <li class="nav-item">
+            <a style="margin-right: 40px" href="/api/auth/logout" class="nav-link"
+              ><span>خروج</span></a
+            >
+          </li>
+          <% } %>
+        </ul>
+      </nav>
+      
+
+      <!-- main  -->
+
+      <form class="profile-form" action="javascript:void(0);">
+        <div class="user-avatar-section">
+          <h5 style="font-weight: lighter;font-size: 15px;margin: 3px 85px 10px 0;color: #333;">تغییر آواتار</h5>
+          <img class="user-avatar" id="user-avatar-image">
+          <input type="file" name="avatar" id="avatar">
+        </div>
+        
+        <h5 style="font-weight: lighter;font-size: 15px;margin: 20px 85px 20px 0;color: #333;">ویرایش پروفایل</h5>
+        <input class="profile-form-input" type="text" id="firstName" name="firstName">
+        <input class="profile-form-input" type="text" id="lastName" name="lastName">
+        <input class="profile-form-input" type="text" id="email" name="email">
+        <button id="update-user-btn">تغییر پروفایل</button>
+      </form>
+
+    
+
+    <script src="../javascripts/script.js"></script>
+
+
+    <script>
+      let email = document.getElementById("email");
+      let file=document.getElementById("avatar")
+      let updateAvatarBtn = document.getElementById("update-avatar-btn");
+      let updateUserBtn = document.getElementById("update-user-btn");
+  
+      const notifications = document.querySelector(".notifications");
+
+      async function getUser() {
+        const response = await fetch("/api/users/me");
+        const user = await response.json();
+        return user
+      }
+
+
+     getUser().then(data=>{
+      let user=data.user
+      document.getElementById("firstName").value=user.firstName
+      document.getElementById("lastName").value=user.lastName
+      document.getElementById("email").value=user.email
+      document.getElementById("user-avatar-image").src=  user.avatar === './images/frog.png' ? '../../images/frog.png' :  `../images/${user.avatar}`
+
+       updateUserBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if (
+          email.value === "" ||
+          email.value === null ||
+          email.value === undefined
+        ) {
+          let msg = "ایمیل نباید خالی باشد";
+          createToast("error", "fa-circle-xmark", msg);
+        }
+
+      else {
+          
+      $(document).ready(function () {
+        getUser().then(data=>{
+          let userId=data.user._id
+
+          $("#update-user-btn").click(function (e) { 
+               e.preventDefault();
+              
+               $.ajax({
+                  type: "PUT",
+                  url: `/api/users/${userId}/update-user-info`,
+                  data: {
+                     firstName:$("#firstName").val(),
+                     lastName:$("#lastName").val(),
+                     email:$("#email").val(),
+                  },
+                  success: function (response) {
+                     swal({
+                           title: "آیا از ویرایش حساب خود اطمینان دارید؟",
+                           icon: "warning",
+                           dangerMode: true,
+                           buttons: ["لغو", "تایید"],
+                        })
+                        .then((result) => {
+                        if (result) {
+                           swal("حساب شما ویرایش شد", {
+                              icon: "success",
+                           }).then(()=>{
+                              location.reload()
+                           })
+                          
+                        } else {
+                           swal({
+                              title:"حساب شما ویرایش نشد",
+                              button: "تایید",
+                           });
+                        }
+                        });
+                  },
+                  error: function (xhr, textStatus, errorThrown) {
+                     document.getElementById("error-msg").innerText=xhr.statusText + " " + "خطایی به وجود آمد دوباره امتحان کنید"
+                  },
+               });
+            });
+
+            
+      
+        })
+        
+      });
+        }
+      });
+
+      $(document).ready(function () {
+        getUser().then(data=>{
+          let user=data.user
+          $("#avatar").change(function (e) { 
+              e.preventDefault();
+              console.log("avatar change");
+              var fd = new FormData();
+                    fd.set('avatar', $('#avatar')[0].files[0])
+                    $.ajax({
+                        type: "PUT",
+                        url: `/api/users/${user._id}/update-user-avatar`,
+                        data: fd,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                        swal({
+                              title: "عکس شما ویرایش شد",
+                              icon: "success",
+                              button: "تایید",
+                        }).then(()=>{
+                            location.reload()
+                        })
+                            
+                        }
+                    });
+          });
+        })
+       
+      });
+
+     })
+
+     
+    </script>
+  </body>
+</html>

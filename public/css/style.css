@@ -1,0 +1,266 @@
+:root {
+    --gray-darker:  #444444;
+    --gray-dark: #696969;
+    --gray:#999999;
+    --gray-light: #cccccc;
+    --gray-lighter:  #ececec;
+    --gray-lightest: #f8f7f7;
+}
+
+
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+
+body {
+    font-size: 28px;
+}
+
+/* Page */
+
+html {
+    box-sizing: border-box;
+}
+
+*, 
+*:before, 
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    /* background-color: rgb(252, 4, 45);  */
+}
+
+.nav {
+    width: 550px;
+    margin: 30px auto 0 auto;
+    text-align: center;
+  
+}
+
+/* Navigation */
+
+.nav {
+    font-family: Georgia, Arial, sans-serif;
+}
+
+.nav-items {
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    display: inline-block;
+    margin-right: 50px;
+}
+
+
+.nav-item:last-child {
+    margin-right: 0;
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active {
+    display: block;
+    position: relative;
+    font-size: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+}
+
+.active{
+    color: rgb(252, 4, 45);
+}
+
+.nav-link,
+.nav-link:link, 
+.nav-link:visited, 
+.nav-link:active {
+    color: #555;
+}
+
+.nav-link::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgb(252, 4, 45);
+    opacity: 0;
+    -webkit-transform: translate(0, 10px);
+    transform: translate(0, 10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover::before,
+.nav-link:hover::before {
+    opacity: 1;
+    -webkit-transform: translate(0, 5px);
+    transform: translate(0, 5px);
+}
+
+
+
+img {
+    height: auto;
+    width: 100%;
+    vertical-align: middle;
+  }
+  
+  .btn {
+    background-color: rgb(252, 4, 45);
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    padding: 12px 20px;
+    text-transform: lowercase;
+    font-size: 15px;
+  }
+  
+
+  .btn:active{
+    transform: scale(0.98);
+  }
+  
+  .btn--block {
+    display: block;
+    width: 100%;
+  }
+
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 60px 12%;
+    padding: 0;
+  }
+  
+  .cards__item {
+    border-radius: 8px;
+    display: flex;
+    padding: 10px;
+    margin: 100px 0;
+    @media(min-width: 40rem) {
+      width: 50%;
+    }
+    @media(min-width: 56rem) {
+      width: 33.3333%;
+    }
+  }
+  
+  .card {
+    background-color: white;
+    /* box-shadow: 0 20px 40px -14px rgba(0,0,0,0.25); */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    &:hover {
+      .card__image {
+        filter: contrast(100%);
+      }
+    }
+
+  }
+
+  .card__image {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    filter: contrast(70%);
+    filter: saturate(180%);
+    overflow: hidden;
+    position: relative;
+    transition: filter 0.5s cubic-bezier(.43,.41,.22,.91);;
+    &::before {
+      content: "";
+        display: block;
+      padding-top: 56.25%; 
+    }
+    @media(min-width: 40rem) {
+      &::before {
+        padding-top: 66.6%; 
+      }
+    }
+  }
+  
+
+
+
+  .card__title {
+    color: var(--gray-dark);
+    font-size: 15px;
+    font-weight: 300;
+    margin: 20px 25px;
+  }
+  
+
+
+#search-input{
+  margin: 25px;
+  border-radius: 4px;
+  background-color: #F1F2F4;
+  border: 0;
+  width: 50%;
+  padding: 18px;
+  display: inline;
+}
+
+#search-input:focus{
+ outline: none;
+}
+
+.product-title{
+  margin: 10px 0;
+}
+
+.product-title p:hover{
+  color: rgb(255,90,84);
+}
+
+.logo{
+  width: 4%;
+  height: 4.5%;
+  margin: 20px;
+}
+
+.center {
+  text-align: center;
+  margin: 150px;
+}
+
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid #ddd;
+  margin: 0 4px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.pagination a.active {
+  background-color: rgb(255, 53, 46);
+  color: white;
+  border: 1px solid rgb(255,90,84);
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+
+

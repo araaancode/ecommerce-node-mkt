@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="../../images/3.png" type="image/x-icon" />
+    <title><%=title%></title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Lato", sans-serif;
+      }
+
+      .sidebar {
+        margin: 0;
+        padding: 0;
+        width: 250px;
+        background-color: #f1f1f1;
+        position: fixed;
+        height: 100%;
+        overflow: auto;
+        float: right;
+      }
+
+      .sidebar a {
+        display: block;
+        color: #333;
+        padding: 16px;
+        text-decoration: none;
+        margin: 10px 0;
+      }
+
+      .sidebar a:first-child {
+        margin: 20px 0 10px 0;
+      }
+
+      .sidebar a.active {
+        color: rgb(252, 4, 45);
+      }
+
+      .sidebar a:hover:not(.active) {
+        color: rgb(252, 4, 45);
+      }
+
+      div.content {
+        padding: 1px 16px;
+        height: 1000px;
+        margin-right: 280px;
+        margin-left: 20px;
+      }
+
+      @media screen and (max-width: 700px) {
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+        }
+        .sidebar a {
+          float: left;
+        }
+        div.content {
+          margin-left: 0;
+        }
+      }
+
+      @media screen and (max-width: 400px) {
+        .sidebar a {
+          text-align: center;
+          float: none;
+        }
+      }
+
+      i {
+        font-size: 20px;
+      }
+
+      .div {
+        width: 80%;
+        margin: 80px auto;
+      }
+    </style>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      #myInput {
+        background-image: url("/css/searchicon.png");
+        background-position: 10px 10px;
+        background-repeat: no-repeat;
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid #ddd;
+        /* margin-bottom: 20px; */
+      }
+
+      #myTable {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #ddd;
+        font-size: 18px;
+        text-align: right;
+        height: 100%;
+      }
+
+      #myTable th,
+      #myTable td {
+        text-align: left;
+        padding: 12px;
+        text-align: right;
+      }
+
+      #myTable tr {
+        border-bottom: 1px solid #ddd;
+        text-align: right;
+      }
+
+      #myTable tr.header {
+        background-color: #f1f1f1;
+      }
+
+      #myTable i {
+        font-size: 15px;
+      }
+
+      .table-btn {
+        cursor: pointer;
+        background-color: #fff;
+        border: 0;
+        padding: 8px;
+        margin: 0 10px;
+      }
+
+      .tooltiptext {
+        margin-right: 15px;
+      }
+    </style>
+
+    <style>
+      .center {
+        text-align: center;
+        margin: 20px;
+      }
+
+      .pagination {
+        display: inline-block;
+      }
+
+      .pagination a {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        border: 1px solid #ddd;
+        margin: 0 4px;
+        font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+      }
+
+      .pagination a.active {
+        background-color: rgb(255, 53, 46);
+        color: white;
+        border: 1px solid rgb(255, 90, 84);
+      }
+
+      .pagination a:hover:not(.active) {
+        background-color: #ddd;
+      }
+    </style>
+
+    <style>
+      .fa-pen {
+        color: rgb(0, 153, 255);
+      }
+      .fa-trash {
+        color: red;
+      }
+    </style>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      /* The Modal (background) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 50px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      }
+
+      /* Modal Content */
+      .modal-content {
+        background-color: #fefefe;
+        border-radius: 10px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+      }
+
+      /* The Close Button */
+      .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        float: left;
+        top: 0;
+        left: 0;
+        display: block;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .modal input,
+      textarea {
+        border: 1px solid #cacaca;
+        width: 100%;
+        padding: 8px;
+        margin: 10px auto;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      .modal input:focus,
+      textarea:focus {
+        outline-color: rgb(255, 123, 119);
+      }
+
+      .modal button {
+        background-color: rgb(255, 53, 46);
+        border: 0;
+        padding: 12px 20px;
+        font-size: 15px;
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        margin: 15px 0 0 0;
+      }
+
+      .modal .modal-product-image {
+        width: 100px;
+        height: 100px;
+      }
+
+      .modal .modal-image {
+        display: block;
+        width: 100%;
+        margin: 5px auto 5px 80px;
+      }
+
+      .modal .modal-image input {
+        border: 0;
+      }
+
+      .modal .modal-image button {
+        background-color: rgb(255, 53, 46);
+        border: 0;
+        padding: 8px;
+        font-size: 15px;
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        margin: 5px 0 0 0;
+        display: inline-block;
+      }
+
+      .btn-eye {
+        cursor: pointer;
+        border: 0;
+        background-color: white;
+        padding: 4px;
+        font-size: 25px;
+      }
+    </style>
+  </head>
+  <body dir="rtl">
+    <div dir="rtl" class="sidebar">
+      <a class="tooltip" href="/admin">
+        <i class="fa fa-home"></i>
+        <span class="tooltiptext">خانه</span>
+      </a>
+      <a class="tooltip" href="/admin/users">
+        <i class="fa fa-users"></i>
+        <span class="tooltiptext">کاربران</span>
+      </a>
+      <a class="tooltip" href="/admin/products">
+        <i class="fa fa-tshirt"></i>
+        <span class="tooltiptext">محصولات</span>
+      </a>
+      <a class="tooltip active" href="/admin/orders">
+        <i class="fa fa-shopping-cart"></i>
+        <span class="tooltiptext">سفارش ها</span>
+      </a>
+      <a class="tooltip" href="/admin/signout">
+        <i class="fa fa-sign-out-alt"></i>
+        <span class="tooltiptext">خروج</span>
+      </a>
+    </div>
+
+    <div class="content">
+      <div class="div">
+        <input
+          type="text"
+          id="myInput"
+          onkeyup="myFunction()"
+          placeholder="جستجو سفارش..."
+        />
+
+        <table id="myTable">
+          <tr class="header">
+            <th>کد سفارش</th>
+            <th>دیدن سفارش</th>
+          </tr>
+          <% orders.forEach(function(order) { %>
+          <tr>
+            <td><%=order._id%></td>
+            <td>
+              <button class="btn-eye">
+                <i id="<%=order._id%>" class="fa fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+          <% }); %>
+        </table>
+        <div class="center">
+          <div class="pagination">
+            <% if (current == 1) { %>
+            <a class="disabled" disabled href="#">قبل</a>
+            <% for(var i=0; i < pages; i++) { %>
+            <a
+              href="/admin/orders/?page=<%=i+1%>"
+              style="<%= i+1 == current ? 'background-color: rgb(252, 4, 45);' :''%>"
+              ><%= i + 1 %></a
+            >
+            <% } %>
+            <a href="/admin/orders/?page=<%=+current+1%>">بعد</a>
+
+            <% } else if(current >=2 && current <= 11) {%>
+            <a href="/admin/orders/?page=<%=+current-1%>">قبل</a>
+            <% for(var i=0; i < pages; i++) { %>
+            <a
+              href="/admin/orders/?page=<%=i+1%>"
+              style="<%= i+1 == current ? 'background-color: rgb(252, 4, 45);' :''%>"
+              ><%= i + 1 %></a
+            >
+            <% } %>
+            <a href="/admin/orders/?page=<%=+current+1%>">بعد</a>
+            <% } else if(current == 12) { %>
+            <a href="/admin/orders/?page=<%=+current-1%>">قبل</a>
+            <% for(var i=0; i < pages; i++) { %>
+            <a
+              href="/admin/orders/?page=<%=i+1%>"
+              style="<%= i+1 == current ? 'background-color: rgb(252, 4, 45);' :''%>"
+              ><%= i + 1 %></a
+            >
+            <% } %>
+            <a class="disabled" disabled href="#">بعد</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trigger/Open The Modal -->
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="firstName"></p>
+        <p id="lastName"></p>
+        <p id="email"></p>
+        <hr />
+        <h2 style="color: rgb(226, 17, 17)">لیست خرید</h2>
+        <p id="totalPrice"></p>
+        <p id="paidAt"></p>
+      </div>
+    </div>
+
+    <script>
+      function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[0];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
+    </script>
+    <script src="../../javascripts/link.js"></script>
+    <script>
+      // update product
+      // Get the modal
+      let modalContent = document.querySelector(".modal-content");
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("fa-eye")) {
+          let id = e.target.id;
+          modal.style.display = "block";
+
+          async function findUser(id) {
+            try {
+              const response = await fetch(`/api/users/${id}`);
+              const result = await response.json();
+              var user = result.user;
+              return user;
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          }
+
+          async function fetchData() {
+            try {
+              const response = await fetch(`/api/orders/${id}`);
+              const result = await response.json();
+              var order = result.order;
+              return order;
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          }
+
+          fetchData()
+            .then((order) => {
+              findUser(order.user).then((userOrder) => {
+                document.getElementById(
+                  "firstName"
+                ).innerHTML = `<b>نام: </b> ${userOrder.firstName}`;
+                document.getElementById(
+                  "lastName"
+                ).innerHTML = `<b>نام خانوادگی: </b> ${userOrder.lastName}`;
+                document.getElementById(
+                  "email"
+                ).innerHTML = `<b>ایمیل: </b> ${userOrder.email}`;
+              });
+
+              order.orderItems.forEach((ori) => {
+                modalContent.innerHTML += `
+                  <p> <b>نام کالا:</b> ${ori.title}, <b>تعداد:</b> ‌ ${ori.amount}, <b>قیمت کالا:</b> ${ori.price}</p>
+                `;
+              });
+              document.getElementById("paidAt").innerHTML =
+                "<b>تاریخ ایجاد سفارش: </b>" + order.paidAt;
+              document.getElementById("totalPrice").innerHTML =
+                "<b>قیمت کل: ‌</b>" + order.totalPrice;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

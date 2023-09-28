@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="shortcut icon" href="../images/3.png" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/register.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <title><%=title%></title>
+    <style>
+      /* Import Google font - Poppins */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      :root {
+        --dark: #34495e;
+        --light: #ffffff;
+        --success: #0abf30;
+        --error: #e24d4c;
+        --warning: #e9bd0c;
+        --info: #3498db;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .notifications {
+        position: fixed;
+        top: 30px;
+        right: 20px;
+      }
+      .notifications :where(.toast, .column) {
+        display: flex;
+        align-items: center;
+      }
+      .notifications .toast {
+        width: 400px;
+        position: relative;
+        overflow: hidden;
+        list-style: none;
+        border-radius: 4px;
+        padding: 16px 17px;
+        margin-bottom: 10px;
+        background: var(--light);
+        justify-content: space-between;
+        animation: show_toast 0.3s ease forwards;
+      }
+      @keyframes show_toast {
+        0% {
+          transform: translateX(100%);
+        }
+        40% {
+          transform: translateX(-5%);
+        }
+        80% {
+          transform: translateX(0%);
+        }
+        100% {
+          transform: translateX(-10px);
+        }
+      }
+      .notifications .toast.hide {
+        animation: hide_toast 0.3s ease forwards;
+      }
+      @keyframes hide_toast {
+        0% {
+          transform: translateX(-10px);
+        }
+        40% {
+          transform: translateX(0%);
+        }
+        80% {
+          transform: translateX(-5%);
+        }
+        100% {
+          transform: translateX(calc(100% + 20px));
+        }
+      }
+      .toast::before {
+        position: absolute;
+        content: "";
+        height: 3px;
+        width: 100%;
+        bottom: 0px;
+        left: 0px;
+        animation: progress 5s linear forwards;
+      }
+      @keyframes progress {
+        100% {
+          width: 0%;
+        }
+      }
+      .toast.success::before,
+      .btn#success {
+        background: var(--success);
+      }
+      .toast.error::before,
+      .btn#error {
+        background: var(--error);
+      }
+      .toast.warning::before,
+      .btn#warning {
+        background: var(--warning);
+      }
+      .toast.info::before,
+      .btn#info {
+        background: var(--info);
+      }
+      .toast .column i {
+        font-size: 1.75rem;
+      }
+      .toast.success .column i {
+        color: var(--success);
+      }
+      .toast.error .column i {
+        color: var(--error);
+      }
+      .toast.warning .column i {
+        color: var(--warning);
+      }
+      .toast.info .column i {
+        color: var(--info);
+      }
+      .toast .column span {
+        font-size: 1.07rem;
+        margin-left: 12px;
+      }
+      .toast i:last-child {
+        color: #aeb0d7;
+        cursor: pointer;
+      }
+      .toast i:last-child:hover {
+        color: var(--dark);
+      }
+      .buttons .btn {
+        border: none;
+        outline: none;
+        cursor: pointer;
+        margin: 0 5px;
+        color: var(--light);
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border-radius: 4px;
+      }
+
+      @media screen and (max-width: 530px) {
+        .notifications {
+          width: 95%;
+        }
+        .notifications .toast {
+          width: 100%;
+          font-size: 1rem;
+          margin-left: 20px;
+        }
+        .buttons .btn {
+          margin: 0 1px;
+          font-size: 1.1rem;
+          padding: 8px 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="notifications"></ul>
+
+    <div class="container">
+      <a href="/">
+        <img
+          style="width: 20%; height: 20%; margin: 20px 40% 5px 40%"
+          src="../images/3.png"
+          alt=""
+        />
+      </a>
+
+      <form action="javascript:void(0);" id="form" method="POST" class="form">
+        <div class="form-control">
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            placeholder="نام را وارد کنید"
+          />
+          <small style="text-align: right; float: right">Error message</small>
+        </div>
+        <div class="form-control">
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            placeholder="نام خانوادگی را وارد کنید"
+          />
+          <small style="text-align: right; float: right">Error message</small>
+        </div>
+        <div class="form-control">
+          <input
+            type="text"
+            name="email"
+            id="email"
+            placeholder="ایمیل را وارد کنید"
+          />
+          <small style="text-align: right; float: right">Error message</small>
+        </div>
+        <div class="form-control">
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="گذرواژه را وارد کنید "
+          />
+          <small style="text-align: right; float: right">Error message</small>
+        </div>
+        <div class="form-control">
+          <input
+            type="password"
+            name="confirmPassword"
+            id="confirmPassword"
+            placeholder="تایید گذرواژه را وارد کنید "
+          />
+          <small style="text-align: right; float: right">Error message</small>
+        </div>
+
+        <button id="register-btn">ثبت نام</button>
+        حساب دارید؟ <a href="/login">ورود</a>
+      </form>
+    </div>
+    <script>
+      let firstName = document.getElementById("firstName");
+      let lastName = document.getElementById("lastName");
+      let email = document.getElementById("email");
+      let password = document.getElementById("password");
+      let confirmPassword = document.getElementById("confirmPassword");
+      let registerBtn = document.getElementById("register-btn");
+      const notifications = document.querySelector(".notifications");
+
+      // Object containing details for different types of toasts
+      const toastDetails = {
+        timer: 5000,
+        success: {
+          icon: "fa-circle-check",
+          text: "Success: This is a success toast.",
+        },
+        error: {
+          icon: "fa-circle-xmark",
+          text: "Error: This is an error toast.",
+        },
+        warning: {
+          icon: "fa-triangle-exclamation",
+          text: "Warning: This is a warning toast.",
+        },
+        info: {
+          icon: "fa-circle-info",
+          text: "Info: This is an information toast.",
+        },
+      };
+
+      const removeToast = (toast) => {
+        toast.classList.add("hide");
+        if (toast.timeoutId) clearTimeout(toast.timeoutId); // Clearing the timeout for the toast
+        setTimeout(() => toast.remove(), 500); // Removing the toast after 500ms
+      };
+
+      const createToast = (id, icon, text) => {
+        // Getting the icon and text for the toast based on the id passed
+        // const { icon, text } = toastDetails[id];
+        const toast = document.createElement("li"); // Creating a new 'li' element for the toast
+        toast.className = `toast ${id}`; // Setting the classes for the toast
+        // Setting the inner HTML for the toast
+        toast.innerHTML = `<div class="column">
+                   <i class="fa-solid ${icon}"></i>
+                   <span style="margin-right:10px"> ${text}</span>
+                </div>
+                <i class="fa-solid fa-xmark" onclick="removeToast(this.parentElement)"></i>`;
+        notifications.appendChild(toast); // Append the toast to the notification ul
+        // Setting a timeout to remove the toast after the specified duration
+        toast.timeoutId = setTimeout(() => removeToast(toast), 5000);
+      };
+
+      // Example POST method implementation:
+      async function registerUser(url = "", data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+      }
+
+      registerBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        if (
+          firstName.value === "" ||
+          firstName.value === null ||
+          firstName.value === undefined
+        ) {
+          let msg = "نام نباید خالی باشد";
+          createToast("error", "fa-circle-xmark", msg);
+        } else if (
+          lastName.value === "" ||
+          lastName.value === null ||
+          lastName.value === undefined
+        ) {
+          let msg = "نام خانوادگی نباید خالی باشد";
+          createToast("error", "fa-circle-xmark", msg);
+        } else if (
+          email.value === "" ||
+          email.value === null ||
+          email.value === undefined
+        ) {
+          let msg = "ایمیل نباید خالی باشد";
+          createToast("error", "fa-circle-xmark", msg);
+        }
+
+        if (
+          password.value === "" ||
+          password.value === null ||
+          password.value === undefined
+        ) {
+          let msg = "گذرواژه نباید خالی باشد";
+          createToast("error", "fa-circle-xmark", msg);
+        } else if (
+          confirmPassword.value === "" ||
+          confirmPassword.value === null ||
+          confirmPassword.value === undefined
+        ) {
+          let msg = "تایید گذرواژه نباید خالی باشد";
+          createToast("error", "fa-circle-xmark", msg);
+        } else {
+          registerUser("/api/auth/register", {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            email: email.value,
+            password: password.value,
+            confirmPassword: confirmPassword.value,
+          })
+            .then((data) => {
+              let msgCode = data.msgCode;
+              switch (msgCode) {
+                case 1:
+                  createToast("warning", "fa-triangle-exclamation", data.msg);
+                  break;
+
+                case 2:
+                  createToast("success", "fa-circle-check", data.msg);
+                  setTimeout(() => {
+                    localStorage.setItem("userId", data._id);
+                    location.reload();
+                  }, 5000);
+                  break;
+
+                case 3:
+                  createToast("error", "fa-circle-xmark", data.msg);
+                  break;
+
+                case 4:
+                  createToast("info", "fa-circle-info", data.msg);
+                  break;
+                default:
+                  break;
+              }
+            })
+            .catch((error) => {
+              createToast("error", "fa-circle-xmark", error);
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

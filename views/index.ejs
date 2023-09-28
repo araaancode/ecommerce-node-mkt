@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/slider.css" />
+    <link rel="shortcut icon" href="../images/3.png" type="image/x-icon">
+    <title><%=title%></title>
+    <style>
+      .disabled{
+        cursor:not-allowed;
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+
+      <%-include("./const/header")%>
+      <%-include("./const/slider")%>
+
+      <!-- main  -->
+
+      <ul style="margin-top: 100px;margin-bottom: 100px;" class="cards">
+        <% limitProducts.forEach(function (product) { %>
+          <li class="cards__item">
+            
+            <div class="card">
+              <a href="/products/<%=product._id%>">
+                <div style="width: 300px;height: 300px;">
+                  <img id="<%=product._id%>" class="card__image" src="<%=product.image%>" alt="<%=product.title%>">
+                </div>
+              </a>
+            </div>
+          </li>
+       <% }) %>
+
+       
+      </ul>
+
+      <div class="center">
+        <div class="pagination">
+          <% if (current == 1) { %>
+            <a class="disabled" disabled href="#">قبل</a>
+            <% for(var i=0; i < pages; i++) { %>
+              <a href="/?page=<%=i+1%>" style="<%= i+1 == current ? 'background-color: rgb(252, 4, 45);' :''%>"><%= i + 1 %></a>
+            <% } %>
+            <a href="/?page=<%=+current+1%>">بعد</a>
+
+           <% } else if(current >=2 && current <= 11) {%>
+            <a href="/?page=<%=+current-1%>">قبل</a>
+            <% for(var i=0; i < pages; i++) { %>
+              <a href="/?page=<%=i+1%>" style="<%= i+1 == current ? 'background-color: rgb(252, 4, 45);' :''%>"><%= i + 1 %></a>
+            <% } %>
+            <a href="/?page=<%=+current+1%>">بعد</a>
+          <% } else if(current == 12) { %>
+            <a href="/?page=<%=+current-1%>">قبل</a>
+            <% for(var i=0; i < pages; i++) { %>
+              <a href="/?page=<%=i+1%>" style="<%= i+1 == current ? 'background-color: rgb(252, 4, 45);' :''%>"><%= i + 1 %></a>
+            <% } %>
+            <a class="disabled" disabled href="#">بعد</a>
+          <% }  %>
+          
+        </div>
+      </div>
+
+    <script src="../javascripts/script.js"></script>
+      
+    <script>
+      let slideIndex = 0;
+      showSlides();
+      
+      function showSlides() {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+        for (i = 0; i < slides.length; i++) {
+          slides[i].style.display = "none";  
+        }
+        slideIndex++;
+        if (slideIndex > slides.length) {slideIndex = 1}    
+        for (i = 0; i < dots.length; i++) {
+          dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex-1].style.display = "block";  
+        dots[slideIndex-1].className += " active";
+        setTimeout(showSlides, 2000); // Change image every 2 seconds
+      }
+    </script>
+
+    <script>
+      document.addEventListener("click",function (e) {
+        if(e.target.classList.contains("card__image")){
+          localStorage.setItem("productId",e.target.id)
+        }
+      })
+    </script>
+
+    <script>
+
+        async function fetchData() {
+          try {
+            const response = await fetch('/api/products')
+            const result = await response.json();
+            var products=result.products
+            localStorage.setItem("products",JSON.stringify(products))
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        }
+
+        fetchData()
+    </script>
+  </body>
+</html>
